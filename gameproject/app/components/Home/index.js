@@ -13,6 +13,7 @@ import Sidebar from "../Sidebar";
 import Options from '../Options';
 import ShowImage from '../ShowImage';
 import ModalName from "../ModalName";
+import TopPlayers from "../TopPlayers";
 
 
 var styles = require('./styles');
@@ -21,7 +22,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      window: 'home',
+      window: 'start',
       newGame: false,
       elements: [],
       numberOfFields: 12,
@@ -113,83 +114,83 @@ export default class Home extends Component {
       playerName: '',
       bestResults: [],
       top5level1: [
-        {
-          playerName: '____________________',
-          level: 1,
-          finishAttempts: ''
-        },
-        {
-          playerName: '____________________',
-          level: 1,
-          finishAttempts: ''
-        },
-        {
-          playerName: '____________________',
-          level: 1,
-          finishAttempts: ''
-        },
-        {
-          playerName: '____________________',
-          level: 1,
-          finishAttempts: ''
-        },
-        {
-          playerName: '____________________',
-          level: 1,
-          finishAttempts: ''
-        },
+        // {
+        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        //   level: 1,
+        //   finishAttempts: ''
+        // },
+        // {
+        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        //   level: 1,
+        //   finishAttempts: ''
+        // },
+        // {
+        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        //   level: 1,
+        //   finishAttempts: ''
+        // },
+        // {
+        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        //   level: 1,
+        //   finishAttempts: ''
+        // },
+        // {
+        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        //   level: 1,
+        //   finishAttempts: ''
+        // },
 
       ],
       top5level2: [
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 2,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 2,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 2,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 2,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 2,
           finishAttempts: ''
         },
       ],
       top5level3: [
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 3,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 3,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 3,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 3,
           finishAttempts: ''
         },
         {
-          playerName: '____________________',
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
           level: 3,
           finishAttempts: ''
         },
@@ -295,46 +296,65 @@ export default class Home extends Component {
     )
   }
 
+  addNewBest = (best, actualTop5) => {
+    let newTop5 = actualTop5.filter(el => el.playerName !== '_ _ _ _ _ _ _ _ _ _ _ _ _');
+    console.log('3', newTop5.length);
+    if (newTop5.length < 5) {
+      newTop5.push(best);
+      newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
+      while (newTop5.length < 5) {
+        newTop5.push({
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+          level: 1,
+          finishAttempts: ''
+        })
+      }
+    } else {
+      const lastTop = newTop5[4];
+      const lastTopAttempts = lastTop.finishAttempts;
+      if (best.finishAttempts < lastTopAttempts) {
+        newTop5.splice(4, 1, best);
+        newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
+      }
+    }
+    console.log('n1', newTop5)
+    return newTop5;
+  }
+
   insertToTop = (best) => {
     const { top5level1, top5level2, top5level3 } = this.state;
-    let newTop5level1 = top5level1;
-    let newTop5level2 = top5level2;
-    let newTop5level3 = top5level3;
+    let actualTop5, newTop5;
     switch (best.level) {
       case 1:
-        // console.log('new', newTop5level1);
-        let top1Length = newTop5level1.filter(el => el.playerName !== '____________________').length;
-        // console.log('list:', top1Length);
-        if (top1Length < 5) {
-          newTop5level1.reverse();
-          newTop5level1.push(best);
-          // console.log('r1',newTop5level1);
-          newTop5level1.reverse();
-          newTop5level1.sort((a, b) => b.finishAttempts - a.finishAttempts);
-          newTop5level1.splice(top1Length + 1, 1);
-          // console.log(newTop5level1);
-        };
-
-        // newTop5level1.reverse();
+        actualTop5 = top5level1.splice();
+        console.log('1', top5level1)
+        console.log('2', best, actualTop5);
+        newTop5 = this.addNewBest(best, actualTop5);
+        this.setState({
+          top5level1: newTop5,
+        })
         break;
       case 2:
-        //
+        actualTop5 = top5level2;
+        console.log(best, actualTop5);
+        newTop5 = this.addNewBest(best, actualTop5);
+        this.setState({
+          top5level2: newTop5,
+        })
         break;
       case 3:
-        //
+        actualTop5 = top5level3;
+        console.log(best, actualTop5);
+        newTop5 = this.addNewBest(best, actualTop5);
+        this.setState({
+          top5level3: newTop5
+        })
         break;
       default:
         break;
     }
-    // let top5level1, top5level2, top5level3;
-    // top5level1 = best.filter(el => el.level == 1);
-    // top5level2 = best.filter(el => el.level == 2);
-    // top5level3 = best.filter(el => el.level == 3);
-    this.setState({
-      top5level1: newTop5level1,
-      top5level2: newTop5level2,
-      top5level3: newTop5level3
-    })
+
+
   }
 
   bestResults = () => {
@@ -588,17 +608,30 @@ export default class Home extends Component {
       this.showContent('start')
   }
 
+  topPlayers = (level) => {
+    if (level == 'level1') {
+      this.state.top5level1.map((el, i) => {
+        return (
+          <View>
+            <Text key={i}> {el.playerName}</Text>
+          </View>
+        )
+      })
+    }
+  }
+
   showContent = (content) => { // top5 do zrobienia
-    (content == 'game') ? this.setModalVisible(true) : null;
-    (content !== 'start') ?
+    if (content == 'game') { this.setModalVisible(true) }
+    if (content !== 'start') {
       this.setState({
         window: content,
         show: content
       })
-      :
+    } else {
       this.setState({
         window: content
       })
+    }
   }
 
   render() {
@@ -662,6 +695,24 @@ export default class Home extends Component {
       )
     })
 
+    const topPlayers =
+      <View>
+        {this.topPlayers('level1')}
+
+      </View>
+    // <View><Text> Level 1: </Text></View>
+    // top5level2.map((el, i) => {
+    //   return (
+    //     <Text key={i}> {el.playerName}</Text>
+    //   )
+    // })
+    // top5level3.map((el, i) => {
+    //   return (
+    //     <Text key={i}> {el.playerName}</Text>
+    //   )
+    // })
+
+
     let mainField;
     if (show == 'game') {
       mainField =
@@ -682,6 +733,15 @@ export default class Home extends Component {
           language={this.state.language}
           flag={this.state.flag}
           texts={this.state.texts}
+        />
+    }
+    if (show == 'top5') {
+      mainField =
+        // <View><Text>sdasda</Text></View>
+        <TopPlayers
+          top5level1={this.state.top5level1}
+          top5level2={this.state.top5level2}
+          top5level3={this.state.top5level3}
         />
     }
 
@@ -762,17 +822,17 @@ export default class Home extends Component {
           <View style={styles.attemptsContainer}></View>
         </View>
     }
-    
+
     const newGameButton = (show == 'game') ?
-    <View style={styles.newGameContainer}>
-      <Button
-        title={newgameButton}
-        onPress={this.onNewGamePress}
-        color="#1d8ed1"
-      />
-    </View>
-    :
-    <View style={styles.newGameContainer} />
+      <View style={styles.newGameContainer}>
+        <Button
+          title={newgameButton}
+          onPress={this.onNewGamePress}
+          color="#1d8ed1"
+        />
+      </View>
+      :
+      <View style={styles.newGameContainer} />
 
     const start =
       <View style={styles.startContainer}>
