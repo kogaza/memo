@@ -7,6 +7,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  BackHandler,
   AsyncStorage
 } from "react-native";
 import Sidebar from "../Sidebar";
@@ -95,106 +96,30 @@ export default class Home extends Component {
           id: 1,
           newGame: require('../../images/nowaGra.png'),
           settings: require('../../images/opcjeGry.png'),
-          top5: require('../../images/top5.png')
+          top5: require('../../images/top5.png'),
+          exit: require('../../images/koniec.png')
         },
         {
           id: 2,
           newGame: require('../../images/newGame.png'),
           settings: require('../../images/settings.png'),
-          top5: require('../../images/top5.png')
+          top5: require('../../images/top5.png'),
+          exit: require('../../images/exit.png'),
         },
         {
           id: 3,
           newGame: require('../../images/novaIgra.png'),
           settings: require('../../images/opcijeIgre.png'),
-          top5: require('../../images/top5.png')
+          top5: require('../../images/top5.png'),
+          exit: require('../../images/izlaz.png'),
         }
       ],
       modalVisible: false,
       playerName: '',
       bestResults: [],
-      top5level1: [
-        // {
-        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        //   level: 1,
-        //   finishAttempts: ''
-        // },
-        // {
-        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        //   level: 1,
-        //   finishAttempts: ''
-        // },
-        // {
-        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        //   level: 1,
-        //   finishAttempts: ''
-        // },
-        // {
-        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        //   level: 1,
-        //   finishAttempts: ''
-        // },
-        // {
-        //   playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        //   level: 1,
-        //   finishAttempts: ''
-        // },
-
-      ],
-      top5level2: [
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 2,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 2,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 2,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 2,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 2,
-          finishAttempts: ''
-        },
-      ],
-      top5level3: [
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 3,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 3,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 3,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 3,
-          finishAttempts: ''
-        },
-        {
-          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-          level: 3,
-          finishAttempts: ''
-        },
-      ],
+      top5level1: [],
+      top5level2: [],
+      top5level3: [],
     }
   }
 
@@ -213,7 +138,28 @@ export default class Home extends Component {
   componentDidMount() {
     this.initializeGame();
     this.translate();
+    for (let i = 1; i <= 3; i++) {
+      this.insertToTop({
+        playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        level: i,
+        finishAttempts: ''
+      });
+    }
   }
+
+  exit_function = () => {
+    const { texts } = this.state;
+    Alert.alert(
+      texts[10],
+      texts[11],
+      [
+        { text: texts[14], onPress: () => BackHandler.exitApp() },
+        { text: texts[15], onPress: () => console.log() },
+      ],
+      { cancelable: false }
+    )
+    ;
+ }
 
   exitModal = () => {
     this.showContent('start');
@@ -298,7 +244,6 @@ export default class Home extends Component {
 
   addNewBest = (best, actualTop5) => {
     let newTop5 = actualTop5.filter(el => el.playerName !== '_ _ _ _ _ _ _ _ _ _ _ _ _');
-    console.log('3', newTop5.length);
     if (newTop5.length < 5) {
       newTop5.push(best);
       newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
@@ -317,7 +262,6 @@ export default class Home extends Component {
         newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
       }
     }
-    console.log('n1', newTop5)
     return newTop5;
   }
 
@@ -327,8 +271,6 @@ export default class Home extends Component {
     switch (best.level) {
       case 1:
         actualTop5 = top5level1.splice();
-        console.log('1', top5level1)
-        console.log('2', best, actualTop5);
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level1: newTop5,
@@ -336,7 +278,6 @@ export default class Home extends Component {
         break;
       case 2:
         actualTop5 = top5level2;
-        console.log(best, actualTop5);
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level2: newTop5,
@@ -344,7 +285,6 @@ export default class Home extends Component {
         break;
       case 3:
         actualTop5 = top5level3;
-        console.log(best, actualTop5);
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level3: newTop5
@@ -353,8 +293,6 @@ export default class Home extends Component {
       default:
         break;
     }
-
-
   }
 
   bestResults = () => {
@@ -531,7 +469,7 @@ export default class Home extends Component {
       'Your result is: ',
       'Yes',
       'No', // 15
-      'Back'
+      'Back',
     ];
     const cro = [
       'Odaberite slike',
@@ -606,18 +544,6 @@ export default class Home extends Component {
       )
       :
       this.showContent('start')
-  }
-
-  topPlayers = (level) => {
-    if (level == 'level1') {
-      this.state.top5level1.map((el, i) => {
-        return (
-          <View>
-            <Text key={i}> {el.playerName}</Text>
-          </View>
-        )
-      })
-    }
   }
 
   showContent = (content) => { // top5 do zrobienia
@@ -695,24 +621,6 @@ export default class Home extends Component {
       )
     })
 
-    const topPlayers =
-      <View>
-        {this.topPlayers('level1')}
-
-      </View>
-    // <View><Text> Level 1: </Text></View>
-    // top5level2.map((el, i) => {
-    //   return (
-    //     <Text key={i}> {el.playerName}</Text>
-    //   )
-    // })
-    // top5level3.map((el, i) => {
-    //   return (
-    //     <Text key={i}> {el.playerName}</Text>
-    //   )
-    // })
-
-
     let mainField;
     if (show == 'game') {
       mainField =
@@ -737,11 +645,11 @@ export default class Home extends Component {
     }
     if (show == 'top5') {
       mainField =
-        // <View><Text>sdasda</Text></View>
         <TopPlayers
           top5level1={this.state.top5level1}
           top5level2={this.state.top5level2}
           top5level3={this.state.top5level3}
+          texts={texts}
         />
     }
 
@@ -874,6 +782,14 @@ export default class Home extends Component {
             style={[styles.background, styles.splash]}
             source={startTexts[textIndex].top5} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.splashContainer, styles.splashExit]}
+          onPress={this.exit_function}
+        >
+          <Image
+            style={[styles.background, styles.splash]}
+            source={startTexts[textIndex].exit} />
+        </TouchableOpacity>
         <Image
           source={require('../../images/stars.png')}
           style={{
@@ -882,6 +798,7 @@ export default class Home extends Component {
             flex: 1,
             transform: [{ rotate: '180deg' }]
           }} />
+
       </View>
 
     const player = (show == 'game') ?
@@ -917,6 +834,7 @@ export default class Home extends Component {
         <View style={styles.newGame}>
           {newGameButton}
         </View>
+
       </View>
 
     return (

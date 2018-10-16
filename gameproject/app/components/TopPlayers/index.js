@@ -19,20 +19,20 @@ export default class TopPlayers extends Component {
   }
 
   render() {
-    const { top5level1, top5level2, top5level3 } = this.props;
+    const { top5level1, top5level2, top5level3, texts } = this.props;
     const level1 = top5level1.map((el, i) => {
       return (
-        <Text style={styles.text} key={i}>{i + 1}. {el.playerName}: {el.finishAttempts}</Text>
+        <Text style={styles.text} key={i}>{i + 1}. {el.playerName} {el.finishAttempts}</Text>
       )
     })
     const level2 = top5level2.map((el, i) => {
       return (
-        <Text style={styles.text} key={i}>{i + 1}. {el.playerName}: {el.finishAttempts}</Text>
+        <Text style={styles.text} key={i}>{i + 1}. {el.playerName} {el.finishAttempts}</Text>
       )
     })
     const level3 = top5level3.map((el, i) => {
       return (
-        <Text style={styles.text} key={i}>{i + 1}. {el.playerName}: {el.finishAttempts}</Text>
+        <Text style={styles.text} key={i}>{i + 1}. {el.playerName} {el.finishAttempts}</Text>
       )
     })
     let topPlayers;
@@ -64,7 +64,7 @@ export default class TopPlayers extends Component {
           key={i}
           onPress={() => this.changeLevel(i)}
         >
-          <Text style={[styles.text, styles.level, selected]}>Level {i + 1} </Text>
+          <Text style={[styles.text, styles.level, selected]}> {texts[i + 7]} </Text>
         </TouchableOpacity>
       )
     })

@@ -22,10 +22,13 @@ var myStyles = React.StyleSheet.create({
     width: 300,
   },
   splashOptions: {
-    width: 250,
+    width: 260,
   },
   splashTop5: {
-    width: 200,
+    width: 220,
+  },
+  splashExit: {
+    width: 180,
   },
   splash: {
     justifyContent: 'center',
