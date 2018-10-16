@@ -158,8 +158,8 @@ export default class Home extends Component {
       ],
       { cancelable: false }
     )
-    ;
- }
+      ;
+  }
 
   exitModal = () => {
     this.showContent('start');
@@ -656,79 +656,66 @@ export default class Home extends Component {
     let header;
     if (show == 'game') {
       header =
-        <View style={styles.headersElements}>
-          {/* <LinearGradient
-            colors={['transparent', '#1d8ed1']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 100,
-            }}
-          /> */}
-          <View style={styles.showOptions}>
-            <Button
-              title={optionsButton}
-              onPress={() => this.showOptionsPress('options')}
-              color="#1d8ed1"
-              width={200}
-            ></Button>
+        <ImageBackground
+          style={styles.background}
+          resizeMode='cover'
+          source={require('../../images/gradient.png')} >
+          <View style={styles.headersElements}>
+            <View style={styles.showOptions}>
+              <Button
+                title={optionsButton}
+                onPress={() => this.showOptionsPress('options')}
+                color="#1d8ed1"
+                width={200}
+              ></Button>
+            </View>
+            <View style={styles.attemptsContainer}>
+              <Text style={styles.attempts}>
+                {texts[4]}: {this.state.attempts}
+              </Text>
+            </View>
           </View>
-          <View style={styles.attemptsContainer}>
-            <Text style={styles.attempts}>
-              {texts[4]}: {this.state.attempts}
-            </Text>
-          </View>
-        </View>
+        </ImageBackground>
+
     }
     if (show == 'options') {
       header =
-        <View style={styles.headersElements}>
-          {/* <LinearGradient
-            colors={['transparent', '#1d8ed1']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 100,
-            }}
-          /> */}
-          <View style={styles.showOptions}>
-            <Button
-              title={saveButton}
-              onPress={() => this.showContent('start')}
-              color="#1d8ed1"
-              width={200}
-            ></Button>
+        <ImageBackground
+          style={styles.background}
+          resizeMode='cover'
+          source={require('../../images/gradient.png')} >
+          <View style={styles.headersElements}>
+            <View style={styles.showOptions}>
+              <Button
+                title={saveButton}
+                onPress={() => this.showContent('start')}
+                color="#1d8ed1"
+                width={200}
+              ></Button>
+            </View>
+            <View style={styles.attemptsContainer}></View>
           </View>
-          <View style={styles.attemptsContainer}></View>
-        </View>
+        </ImageBackground>
+
     }
     if (show == 'top5') {
       header =
-        <View style={styles.headersElements}>
-          {/* <LinearGradient
-            colors={['transparent', '#1d8ed1']}
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: 0,
-              height: 100,
-            }}
-          /> */}
-          <View style={styles.showOptions}>
-            <Button
-              title={backButton}
-              onPress={() => this.showContent('start')}
-              color="#1d8ed1"
-              width={200}
-            ></Button>
+        <ImageBackground
+          style={styles.background}
+          resizeMode='cover'
+          source={require('../../images/gradient.png')} >
+          <View style={styles.headersElements}>
+            <View style={styles.showOptions}>
+              <Button
+                title={backButton}
+                onPress={() => this.showContent('start')}
+                color="#1d8ed1"
+                width={200}
+              ></Button>
+            </View>
+            <View style={styles.attemptsContainer}></View>
           </View>
-          <View style={styles.attemptsContainer}></View>
-        </View>
+        </ImageBackground>
     }
 
     const newGameButton = (show == 'game') ?
