@@ -1,3 +1,3 @@
-rootProject.name = 'gameproject'
+rootProject.name = 'Memoo'
 
 include ':app'

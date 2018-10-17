@@ -1,4 +1,4 @@
-package com.gameproject;
+package com.memoo;
 
 import android.app.Application;
 

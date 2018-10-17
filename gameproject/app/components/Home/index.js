@@ -118,9 +118,27 @@ export default class Home extends Component {
       modalVisible: false,
       playerName: '',
       bestResults: [],
-      top5level1: [],
-      top5level2: [],
-      top5level3: [],
+      top5level1: [
+        {
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+          level: 1,
+          finishAttempts: ''
+        }
+      ],
+      top5level2: [
+        {
+        playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        level: 2,
+        finishAttempts: ''
+      }
+    ],
+      top5level3: [
+        {
+        playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+        level: 3,
+        finishAttempts: ''
+      }
+    ],
     }
   }
 
@@ -133,7 +151,6 @@ export default class Home extends Component {
 
   saveTopPlayers = () => {
     const { top5level1, top5level2, top5level3 } = this.state;
-    console.log('in state', top5level1);
     AsyncStorage.setItem('top5level1', JSON.stringify(top5level1));
     AsyncStorage.setItem('top5level2', JSON.stringify(top5level2));
     AsyncStorage.setItem('top5level3', JSON.stringify(top5level3));
@@ -147,8 +164,6 @@ export default class Home extends Component {
       let top5level2 = JSON.parse(t5l2);
       let t5l3 = await AsyncStorage.getItem('top5level3');
       let top5level3 = JSON.parse(t5l3);
-      console.log('after load 1', top5level1);
-      console.log('after load 2', top5level2);
       if (top5level1 !== null && top5level2 !== null && top5level3 !== null) {
         this.setState({
           top5level1,
@@ -315,12 +330,10 @@ export default class Home extends Component {
         newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
       }
     }
-    console.log('new', newTop5);
     return newTop5;
   }
 
   insertToTop = (best) => {
-    console.log('best', best);
     const { top5level1, top5level2, top5level3 } = this.state;
     let actualTop5, newTop5;
     switch (best.level) {

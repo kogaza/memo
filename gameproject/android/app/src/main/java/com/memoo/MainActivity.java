@@ -1,4 +1,4 @@
-package com.gameproject;
+package com.memoo;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "gameproject";
+        return "Memoo";
     }
 }
