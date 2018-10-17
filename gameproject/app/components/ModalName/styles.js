@@ -42,7 +42,7 @@ var myStyles = React.StyleSheet.create({
     alignItems: 'center',
   },
   exitText: {
-    fontSize: 10,
+    fontSize: 14,
     color: 'white',
   }
 })

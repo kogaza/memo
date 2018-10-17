@@ -252,7 +252,7 @@ export default class ShowImage extends Component {
         (numberOfClicks < 2 && !clicked) ?
           <TouchableOpacity
             style={{ position: 'relative', margin: 2, }}
-            onPress={() => this.flipCard('front', i)}
+            onPressIn={() => this.flipCard('front', i)}
           >
             <Animated.View style={[
               animatedBackStyle,

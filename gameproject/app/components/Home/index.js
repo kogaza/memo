@@ -88,6 +88,7 @@ export default class Home extends Component {
       texts: [],
       optionsButton: '',
       newgameButton: '',
+      resetTop5: '',
       saveButton: '',
       backButton: '',
       textIndex: 0,
@@ -123,29 +124,51 @@ export default class Home extends Component {
     }
   }
 
-  // componentWillMount = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem(BEST_RESULTS_KEY);
-  //     if (value !== null) {
-  //       // We have data!!
-  //       console.log('BEST', value);
-  //     }
-  //   } catch (error) {
-  //     // Error retrieving data
-  //   }
-  // }
-
   componentDidMount() {
+    this.loadTopPlayers();
     this.initializeGame();
     this.translate();
-    for (let i = 1; i <= 3; i++) {
-      this.insertToTop({
-        playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
-        level: i,
-        finishAttempts: ''
-      });
+
+  }
+
+  saveTopPlayers = () => {
+    const { top5level1, top5level2, top5level3 } = this.state;
+    console.log('in state', top5level1);
+    AsyncStorage.setItem('top5level1', JSON.stringify(top5level1));
+    AsyncStorage.setItem('top5level2', JSON.stringify(top5level2));
+    AsyncStorage.setItem('top5level3', JSON.stringify(top5level3));
+  }
+
+  loadTopPlayers = async () => {
+    try {
+      let t5l1 = await AsyncStorage.getItem('top5level1');
+      let top5level1 = JSON.parse(t5l1);
+      let t5l2 = await AsyncStorage.getItem('top5level2');
+      let top5level2 = JSON.parse(t5l2);
+      let t5l3 = await AsyncStorage.getItem('top5level3');
+      let top5level3 = JSON.parse(t5l3);
+      console.log('after load 1', top5level1);
+      console.log('after load 2', top5level2);
+      if (top5level1 !== null && top5level2 !== null && top5level3 !== null) {
+        this.setState({
+          top5level1,
+          top5level2,
+          top5level3
+        }, () => {
+          for (let i = 1; i <= 3; i++) {
+            this.insertToTop({
+              playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+              level: i,
+              finishAttempts: ''
+            });
+          }
+        })
+      }
+    } catch (error) {
+      alert('nic nie ma')
     }
   }
+
 
   exit_function = () => {
     const { texts } = this.state;
@@ -157,8 +180,7 @@ export default class Home extends Component {
         { text: texts[15], onPress: () => console.log() },
       ],
       { cancelable: false }
-    )
-      ;
+    );
   }
 
   exitModal = () => {
@@ -167,8 +189,6 @@ export default class Home extends Component {
   }
 
   setModalVisible(visible) {
-    // text == 'exit' ? this.showContent('start')
-    //   :
     visible ? this.initializeGame()
       :
       null;
@@ -242,10 +262,41 @@ export default class Home extends Component {
     )
   }
 
+  resetTop5 = () => {
+    this.setState({
+      top5level1: [],
+      top5level2: [],
+      top5level3: [],
+    },() => {
+      for (let i = 1; i <= 3; i++) {
+        this.insertToTop({
+          playerName: '_ _ _ _ _ _ _ _ _ _ _ _ _',
+          level: i,
+          finishAttempts: ''
+        });
+      }
+    })
+  }
+
+  onResetTop5 = () => {
+    const { texts } = this.state;
+    Alert.alert(
+      texts[17],
+      texts[11],
+      [
+        { text: texts[14], onPress: () => this.resetTop5() },
+        { text: texts[15], onPress: () => console.log() },
+      ],
+      { cancelable: false }
+    )
+  }
+
   addNewBest = (best, actualTop5) => {
     let newTop5 = actualTop5.filter(el => el.playerName !== '_ _ _ _ _ _ _ _ _ _ _ _ _');
     if (newTop5.length < 5) {
-      newTop5.push(best);
+      if (best.playerName !== '_ _ _ _ _ _ _ _ _ _ _ _ _') {
+        newTop5.push(best);
+      }
       newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
       while (newTop5.length < 5) {
         newTop5.push({
@@ -258,37 +309,41 @@ export default class Home extends Component {
       const lastTop = newTop5[4];
       const lastTopAttempts = lastTop.finishAttempts;
       if (best.finishAttempts < lastTopAttempts) {
-        newTop5.splice(4, 1, best);
+        if (best.playerName !== '_ _ _ _ _ _ _ _ _ _ _ _ _') {
+          newTop5.splice(4, 1, best);
+        }
         newTop5.sort((a, b) => a.finishAttempts - b.finishAttempts);
       }
     }
+    console.log('new', newTop5);
     return newTop5;
   }
 
   insertToTop = (best) => {
+    console.log('best', best);
     const { top5level1, top5level2, top5level3 } = this.state;
     let actualTop5, newTop5;
     switch (best.level) {
       case 1:
-        actualTop5 = top5level1.splice();
+        actualTop5 = top5level1.slice();
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level1: newTop5,
-        })
+        }, () => this.saveTopPlayers())
         break;
       case 2:
         actualTop5 = top5level2;
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level2: newTop5,
-        })
+        }, () => this.saveTopPlayers())
         break;
       case 3:
         actualTop5 = top5level3;
         newTop5 = this.addNewBest(best, actualTop5);
         this.setState({
           top5level3: newTop5
-        })
+        }, () => this.saveTopPlayers())
         break;
       default:
         break;
@@ -311,24 +366,9 @@ export default class Home extends Component {
       default:
         break;
     }
-    // let newArray = bestResults.slice();
     let finishAttempts = attempts + 1;
-    // newArray.push({ level, playerName, finishAttempts });
     let best = { level, playerName, finishAttempts };
-    // if (newArray.length >= 2) {
-    //   newArray.sort((a, b) => a.finishAttempts - b.finishAttempts);
-    // }
     this.insertToTop(best)
-    // this.setState(
-    //   {
-    //     bestResults: newArray
-    //   }, () => this.insertToTop(newArray)
-    // }, async () => {
-    //   try {
-    //     await AsyncStorage.setItem(BEST_RESULTS_KEY, bestResults);
-    //   } catch (e) { }
-    // }
-    // )
   }
 
   hideElements = () => {
@@ -362,7 +402,7 @@ export default class Home extends Component {
             numberOfClicks: 0,
             attempts: attempts + 1
           })
-        }, 500);
+        }, 450);
       }
       else {
         setTimeout(() => {
@@ -450,7 +490,9 @@ export default class Home extends Component {
       'Twój wynik to: ',
       'Tak',
       'Nie', // 15
-      'Powrót'
+      'Powrót',
+      'Chcesz wyczyścić listę top5!',
+      'Wyczyść listę'
     ];
     const ang = [
       'Choose pictures',
@@ -470,6 +512,8 @@ export default class Home extends Component {
       'Yes',
       'No', // 15
       'Back',
+      'You want to clear the list',
+      'Clear the list'
     ];
     const cro = [
       'Odaberite slike',
@@ -488,7 +532,9 @@ export default class Home extends Component {
       'Vaš rezultat je: ',
       'Tako',
       'Nije', // 15
-      'Natrag'
+      'Natrag',
+      'Želite izbrisati popis',
+      'Izbrišite popis'
     ];
     const { flag, levels } = this.state;
     let texts = '';
@@ -520,6 +566,7 @@ export default class Home extends Component {
       newgameButton: texts[5],
       saveButton: texts[6],
       backButton: texts[16],
+      resetTop5: texts[18],
       levels,
     })
   }
@@ -573,6 +620,7 @@ export default class Home extends Component {
       texts,
       optionsButton,
       newgameButton,
+      resetTop5,
       saveButton,
       backButton,
       startTexts,
@@ -723,6 +771,14 @@ export default class Home extends Component {
         <Button
           title={newgameButton}
           onPress={this.onNewGamePress}
+          color="#1d8ed1"
+        />
+      </View>
+      : (show == 'top5') ?
+      <View style={styles.newGameContainer}>
+        <Button
+          title={resetTop5}
+          onPress={this.onResetTop5}
           color="#1d8ed1"
         />
       </View>
