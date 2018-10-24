@@ -8,7 +8,8 @@ import {
   ImageBackground,
   TouchableOpacity,
   BackHandler,
-  AsyncStorage
+  AsyncStorage,
+  Dimensions,
 } from "react-native";
 import Sidebar from "../Sidebar";
 import Options from '../Options';
@@ -505,7 +506,10 @@ export default class Home extends Component {
       'Nie', // 15
       'Powrót',
       'Chcesz wyczyścić listę top5!',
-      'Wyczyść listę'
+      'Wyczyść listę',
+      'Jak masz na imię?',
+      'Wyjdź', // 20
+      'Twoje imię',
     ];
     const ang = [
       'Choose pictures',
@@ -526,7 +530,10 @@ export default class Home extends Component {
       'No', // 15
       'Back',
       'You want to clear the list',
-      'Clear the list'
+      'Clear the list',
+      "What's your name?",
+      'Exit', // 20
+      'Your name',
     ];
     const cro = [
       'Odaberite slike',
@@ -547,7 +554,10 @@ export default class Home extends Component {
       'Nije', // 15
       'Natrag',
       'Želite izbrisati popis',
-      'Izbrišite popis'
+      'Izbrišite popis',
+      'Kako se zoveš',
+      'Izlaz', // 20
+      'Tvoje ime',
     ];
     const { flag, levels } = this.state;
     let texts = '';
@@ -621,8 +631,8 @@ export default class Home extends Component {
   }
 
   render() {
-    let widthEl = 0;
-    let heightEl = 0;
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
     const {
       numberOfClicks,
       imagesType,
@@ -647,16 +657,16 @@ export default class Home extends Component {
 
     switch (numberOfFields) {
       case 8:
-        widthEl = 120;
-        heightEl = 80;
+        widthEl = width/3;
+        heightEl = height/8;
         break;
       case 12:
-        widthEl = 100;
-        heightEl = 80;
+        widthEl = width/4;
+        heightEl = height/8;
         break;
       case 24:
-        widthEl = 75;
-        heightEl = 55;
+        widthEl = width/5;
+        heightEl = height/11;
         break;
       default:
         break;
@@ -859,7 +869,7 @@ export default class Home extends Component {
 
     const player = (show == 'game') ?
       <View style={styles.playerName}>
-        <Text style={styles.playerNameText}>Your name: {playerName}</Text>
+        <Text style={styles.playerNameText}>{texts[21]}: {playerName}</Text>
       </View>
       :
       null
@@ -869,6 +879,7 @@ export default class Home extends Component {
         <ModalName
           modalVisible={modalVisible}
           playerName={playerName}
+          texts={texts}
           setModalVisible={(visible) => this.setModalVisible(visible)}
           changeModalText={(name) => this.changeModalText(name)}
           exitModal={() => this.exitModal()}

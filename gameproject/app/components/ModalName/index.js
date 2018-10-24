@@ -9,12 +9,9 @@ import {
 } from 'react-native';
 var styles = require('./styles');
 
-const NAME_FIELD_KEY = 'NAME_FIELD_KEY'
-
-
 export default class ModalName extends Component {
   render() {
-    const { modalVisible, playerName } = this.props;
+    const { modalVisible, playerName, texts } = this.props;
     return (
       <Modal
         animationType="slide"
@@ -24,19 +21,14 @@ export default class ModalName extends Component {
           Alert.alert('Modal has been closed.');
         }}>
         <View style={styles.container} >
-          <Text style={{ color: 'white', fontSize: 20 }}>What's your name?</Text>
+          <Text style={{ color: 'white', fontSize: 20 }}>{texts[19]}</Text>
           <TextInput
             style={styles.textInput}
-            placeholder='Your name'
+            placeholder={texts[21]}
             placeholderTextColor='rgba(138, 252, 214, 0.5)'
             selectionColor='#8afcd6'
             value={playerName}
             onChangeText={(name) => this.props.changeModalText(name)}
-            // onSubmitEditing={async () => {
-            //   try {
-            //     await AsyncStorage.setItem(NAME_FIELD_KEY, playerName);
-            //   } catch (e) { }
-            // }}
           />
           <TouchableHighlight
             style={{ marginTop: 10 }}
@@ -44,7 +36,7 @@ export default class ModalName extends Component {
               this.props.setModalVisible(!modalVisible);
             }}>
             <View style={styles.saveName}>
-              <Text style={styles.saveText}>Save</Text>
+              <Text style={styles.saveText}>{texts[6]}</Text>
             </View>
           </TouchableHighlight>
           <TouchableHighlight
@@ -53,7 +45,7 @@ export default class ModalName extends Component {
               this.props.exitModal();
             }}>
             <View style={styles.exitName}>
-              <Text style={styles.exitText}>exit</Text>
+              <Text style={styles.exitText}>{texts[20]}</Text>
             </View>
           </TouchableHighlight>
         </View>
